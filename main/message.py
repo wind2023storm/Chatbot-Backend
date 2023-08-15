@@ -14,6 +14,7 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk import pos_tag
+import re
 
 pretty.install()
 message = Blueprint('message', __name__)
@@ -92,11 +93,40 @@ def send_message():
         current_message.update_date = datetime.datetime.now()
 
         db.session.commit()
+        # links = re.findall(r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+/[-\w./?=%&]+', response)
         _response = {
             'success': True,
             'code': 200,
             'message': 'Success Generate!!',
-            'data': response
+            'data': response,
+            # 'image': links
         }
+        
         return jsonify(_response)
+    
+@message.route('/api/getmessages', methods=['POST'])
+def get_messages():
+    chat_id = request.json['id']
+    current_messages = db.session.query(
+        Message).filter_by(chat_id=chat_id).all()
+    response = []
+    for _message in current_messages:
+        message_data = {
+            # 'uuid': _message.uuid,
+            'message': json.loads(_message.message),
+            # 'update_data': _message.update_date.strftime('%Y-%m-%d %H:%M:%S.%f')
+        }
+        response.append(message_data)
+    text = json.dumps(response, indent=4)
+    links = re.findall(r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+/[-\w./?=%&]+', text)
+    print(links)
+
+    _response = {
+        'success': True,
+        'code': 200,
+        'message': 'Your messageBot selected successfully!!!',
+        'data': response,
+        # 'image': links
+    }
+    return jsonify(_response)
             

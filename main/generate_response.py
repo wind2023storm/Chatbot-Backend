@@ -13,10 +13,11 @@ import pinecone
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains import RetrievalQA
 
-PINECONE_API_KEY = ""
-PINECONE_ENV = ""
-OPENAI_API_KEY = ""
-PINECONE_INDEX_NAME = ""
+PINECONE_API_KEY = "d4dfa428-c7a3-4ea6-a858-35ccd0485943"
+PINECONE_ENV = "us-west1-gcp-free"
+OPENAI_API_KEY = "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"
+PINECONE_INDEX_NAME = "chatbot"
+PINECONE_NAMESPACE = "vector-data"
 
 
 def get_hashed_name(name):
@@ -33,10 +34,10 @@ def init_gptcache(cache_obj: Cache, llm: str):
 
 
 def generate_message(query, history, behavior, temp, chat):
-    load_dotenv()
+    # load_dotenv()
 
-    template = """ {behavior}
-    
+    template = """{behavior}
+
     Training data: {examples}
 
     Chathistory: {history}
@@ -49,7 +50,7 @@ def generate_message(query, history, behavior, temp, chat):
     langchain.llm_cache = GPTCache(init_gptcache)
     llm = ChatOpenAI(model_name="gpt-3.5-turbo",
                       temperature=temp,
-                      openai_api_key="")
+                      openai_api_key=OPENAI_API_KEY)
 
     conversation = LLMChain(
         llm=llm,
@@ -58,13 +59,13 @@ def generate_message(query, history, behavior, temp, chat):
     )
     embeddings = OpenAIEmbeddings(openai_api_key=OPENAI_API_KEY)
     docsearch = Pinecone.from_existing_index(
-        index_name=PINECONE_INDEX_NAME, embedding=embeddings)
+        index_name=PINECONE_INDEX_NAME, namespace = PINECONE_NAMESPACE, embedding=embeddings)
     _query = query
     docs = docsearch.similarity_search(query=_query, k=10)
 
     examples = ""
     for doc in docs:
-        if doc.metadata['chat'] == str(chat):
+        # if doc.metadata['chat'] == str(chat):
             doc.page_content = doc.page_content.replace('\n\n', ' ')
             examples += doc.page_content + '\n'
 
@@ -104,7 +105,7 @@ def generate_AI_message(query, history, behavior, temp):
     langchain.llm_cache = GPTCache(init_gptcache)
     llm = ChatOpenAI(model_name="gpt-3.5-turbo",
                       temperature=temp,
-                      openai_api_key="")
+                      openai_api_key=OPENAI_API_KEY)
 
     conversation = LLMChain(
         llm=llm,
