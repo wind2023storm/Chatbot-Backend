@@ -23,6 +23,7 @@ PINECONE_ENV = os.getenv('PINECONE_ENV')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 PINECONE_INDEX_NAME = os.getenv('PINECONE_INDEX_NAME')
 PINECONE_NAMESPACE = os.getenv('PINECONE_NAMESPACE')
+GOOGLE_MAP_API_KEY = os.getenv('GOOGLE_MAP_API_KEY')
 
 pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
 openai.openai_api_key = OPENAI_API_KEY
@@ -39,6 +40,7 @@ def hello_world():
 
 @chat.route('/api/upload', methods=['POST'])
 def upload_gpx():
+    load_dotenv()
     file = request.files.get('file', None)
     if not file:
         return {"success": False}
@@ -58,7 +60,7 @@ def upload_gpx():
     x, y = zip(*coord_list)  # This will unzip the coord_list into two lists
 
     gmap = gmplot.GoogleMapPlotter(
-        x[0], y[0], 14.1, apikey="AIzaSyBspcPw9tdRxWnpx8IXZVhdfv4lBL3qyFE"
+        x[0], y[0], 14.1, apikey=GOOGLE_MAP_API_KEY
     )
     gmap.plot(x, y, "cornflowerblue", edge_width=2.5)
     gmap.draw('main/static/map.html') 
