@@ -18,11 +18,12 @@ import base64
 from selenium import webdriver
 import time
 
-PINECONE_API_KEY = "d4dfa428-c7a3-4ea6-a858-35ccd0485943"
-PINECONE_ENV = "us-west1-gcp-free"
-OPENAI_API_KEY = "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"
-PINECONE_INDEX_NAME = "chatbot"
-PINECONE_NAMESPACE = "vector-data"
+PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
+PINECONE_ENV = os.getenv('PINECONE_ENV')
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+PINECONE_INDEX_NAME = os.getenv('PINECONE_INDEX_NAME')
+PINECONE_NAMESPACE = os.getenv('PINECONE_NAMESPACE')
+
 pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENV)
 openai.openai_api_key = OPENAI_API_KEY
 
