@@ -30,9 +30,9 @@ openai.openai_api_key = OPENAI_API_KEY
 
 chat = Blueprint('chat', __name__)
 coord_list = []
-options = webdriver.ChromeOptions()
-options.add_argument("--headless") # to run in background
-driver = webdriver.Chrome(options=options)
+# options = webdriver.ChromeOptions()
+# options.add_argument("--headless") # to run in background
+# driver = webdriver.Chrome(options=options)
 
 @chat.route('/')
 def hello_world():
@@ -59,22 +59,24 @@ def upload_gpx():
             coord_list.append((point.latitude, point.longitude))
     x, y = zip(*coord_list)  # This will unzip the coord_list into two lists
 
-    gmap = gmplot.GoogleMapPlotter(
-        x[0], y[0], 14.1, apikey=GOOGLE_MAP_API_KEY
-    )
-    gmap.plot(x, y, "cornflowerblue", edge_width=2.5)
-    gmap.draw('main/static/map.html') 
+    # gmap = gmplot.GoogleMapPlotter(
+    #     x[0], y[0], 14.1, apikey=GOOGLE_MAP_API_KEY
+    # )
+    # gmap.plot(x, y, "cornflowerblue", edge_width=2.5)
+    # ht_name = filename + '.html'
+    # gmap.draw('main/static/' + filename + '.html') 
 
-    driver.get('http://localhost:5000' + url_for('static', filename='map.html'))
-    time.sleep(2)  
-    driver.save_screenshot("main/static/map.png")
+    # driver.get('http://localhost:5000' + url_for('static', filename= ht_name))
+    # time.sleep(2)  
+    # driver.save_screenshot("main/static/" + filename + '.png')
 
-    response = {
-        'success': True,
-        'code': 200,
-        'data': 'map.png'
-    }
-    return jsonify(response)
+    # response = {
+    #     'success': True,
+    #     'code': 200,
+    #     'data': filename + '.png'
+    # }
+    # return jsonify(response)
+    return 'success'
 
 @chat.route('/api/addchat', methods=['POST'])
 def add_chat():
@@ -90,7 +92,7 @@ def add_chat():
     location = temp['location']
     behavior = f'''As an avid bike racer, I understand the importance of having the right equipment for optimal performance and safety. 
     
-    Since the user's age is {age} years, {gender}, and {rider_level}, I would recommend the necessary products to provide more comfort for the user.
+    Since the user is {age} years old, {gender}, and {rider_level}, I would recommend the necessary products to provide more comfort for the user.
 
     Please take a moment to fill in the details above so I can generate personalized product recommendations tailored to your specific needs and preferences from specializedaustin website.
     Answer format is like this:
